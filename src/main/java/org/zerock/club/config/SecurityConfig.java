@@ -31,12 +31,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 
+    /*
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception{
-
         // 사용자 계정 user2
         auth.inMemoryAuthentication().withUser("user2")
                 .password("$2a$10$L9IC1R4hU0ibrW.8JsjUOuTkwnFV0fJw/UaFFItOzhsWaEVKBklwm").roles("USER");
-
-    }
+    }*/
 }
