@@ -10,6 +10,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.zerock.club.security.filter.ApiCheckFilter;
+import org.zerock.club.security.filter.ApiLoginFilter;
 import org.zerock.club.security.handler.ClubLoginSuccessHandler;
 import org.zerock.club.security.service.ClubUserDetailsService;
 
@@ -26,6 +29,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public ApiCheckFilter apiCheckFilter(){
+        return new ApiCheckFilter("/notes/**/*");
+    }
+
+    @Bean
+    public ApiLoginFilter apiLoginFilter() throws Exception{
+
+        ApiLoginFilter apiLoginFilter =  new ApiLoginFilter("/api/login");
+        apiLoginFilter.setAuthenticationManager(authenticationManager());
+        return apiLoginFilter;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception{
@@ -37,6 +52,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.oauth2Login().successHandler(successHandler()); // google login
         http.logout(); // 로그아웃
         http.rememberMe().tokenValiditySeconds(60*60*7).userDetailsService(userDetailsService); // rememberMe 유효기간 7일
+
+        http.addFilterBefore(apiCheckFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(apiLoginFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean

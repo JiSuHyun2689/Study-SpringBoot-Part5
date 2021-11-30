@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.catalina.filters.RestCsrfPreventionFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -61,5 +62,16 @@ public class NoteController {
         noteService.remove(num);
 
         return new ResponseEntity<>("removed", HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/{num}", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> modify(@RequestBody NoteDTO noteDTO){
+
+        log.info("-------------------note modify----------------------------");
+        log.info(noteDTO);
+
+        noteService.modify(noteDTO);
+
+        return new ResponseEntity<>("modified", HttpStatus.OK);
     }
 }
